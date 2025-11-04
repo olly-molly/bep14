@@ -23,7 +23,7 @@ const method = "BT-SEARCH"
 
 const btSearchLine = "BT-SEARCH * HTTP/1.1\r\n"
 
-var hdrInfohash = http.CanonicalHeaderKey("iHash")
+var hdrInfohash = http.CanonicalHeaderKey("Infohash")
 var hdrPort = http.CanonicalHeaderKey("port")
 
 const host4 = "239.192.152.143:6771"
@@ -61,6 +61,17 @@ func (l *LSP) Start() {
 	}
 
 	g.Wait()
+}
+
+func (l *LSP) Close() error {
+	var errs error
+	if l.conn4 != nil {
+		errs = multierr.Append(errs, l.conn4.Close())
+	}
+	if l.conn6 != nil {
+		errs = multierr.Append(errs, l.conn6.Close())
+	}
+	return errs
 }
 
 func (l *LSP) read4() {
